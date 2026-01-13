@@ -7,8 +7,54 @@ import {
   Typography,
 } from "@mui/material";
 
+import React,{useState} from "react";
+
 import { useNavigate,Link } from "react-router-dom";
 function SignIn() {
+  const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
+  const [formData, setFormData] = useState({
+      email: "",
+      password: "",
+    });
+  
+    const handleChange = (e) => {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value,
+      });
+    };
+  
+    
+    const handleSubmit = () => {
+  let newErrors = {};
+  const userData = JSON.parse(localStorage.getItem("userData"));
+
+  if (!userData) {
+    setErrors({ general: "User not found, Please Sign up" });
+    return;
+  }
+
+  if (!formData.email.endsWith("@gmail.com")) {
+    newErrors.email = "Email must end with @gmail.com";
+  } else if (formData.email !== userData.email) {
+    newErrors.email = "Email does not match";
+  }
+
+  if (formData.password.length < 8) {
+    newErrors.password = "Password must be at least 8 characters";
+  } else if (formData.password !== userData.password) {
+    newErrors.password = "Password is incorrect";
+  }
+
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+  } else {
+    setErrors({});
+    navigate("/");
+  }
+};
+
   return (
     <Box
       sx={{
@@ -45,9 +91,13 @@ function SignIn() {
           {/* Email */}
           <TextField
             fullWidth
-            label="Your email address"
-            variant="outlined"
-            sx={{ mb: 0.5 }}
+                label="Your email address"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                error={!!errors.email}
+                helperText={errors.email}
+                sx={{ mb: 0.5 }}
           />
 
           <Typography
@@ -61,10 +111,13 @@ function SignIn() {
           {/* Password */}
           <TextField
             fullWidth
-            label="password"
-            type="password"
-            variant="outlined"
-            sx={{ mb: 0.5 }}
+                  label="Password"
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  error={!!errors.password}
+                  helperText={errors.password}
           />
 
           <Typography
@@ -99,6 +152,7 @@ function SignIn() {
 
             <Button
               variant="contained"
+              onClick={handleSubmit}
               sx={{
                 bgcolor: "#1a73e8",
                 textTransform: "none",

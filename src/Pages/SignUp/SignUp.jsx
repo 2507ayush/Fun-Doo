@@ -33,7 +33,7 @@ function SignUp() {
   
   const handleSubmit = () => {
     let newErrors = {};
-
+    localStorage.setItem('userData',JSON.stringify(formData))
     if (!formData.firstName.match(/^[A-Za-z]{2,}$/)) {
       newErrors.firstName = "Enter a valid first name";
     }
