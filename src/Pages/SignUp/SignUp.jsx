@@ -83,7 +83,7 @@ function SignUp() {
               </Typography>
 
               <Typography variant="h5" sx={{ mt: 1, mb: 3 }}>
-                Create your Fundoo account
+                Create your Fundoo <br /> Account
               </Typography>
 
               {/* First & Last Name */}
