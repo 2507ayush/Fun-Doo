@@ -19,6 +19,8 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined';
 import AppsOutlinedIcon from '@mui/icons-material/AppsOutlined';
+import Tooltip from '@mui/material/Tooltip';
+
 
 import { useDrawer } from './Side-Bar-Context';
 
@@ -32,7 +34,7 @@ const Search = styled('div')(({ theme }) => ({
   marginLeft: theme.spacing(8),
   width: '100%',
   maxWidth: 750,
-  height:'45px',
+  height: '45px',
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -50,14 +52,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   width: '100%',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`, 
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
   },
 }));
 
 export default function App() {
-  const {toggleDrawer} = useDrawer();
+  const { toggleDrawer } = useDrawer();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -76,12 +78,14 @@ export default function App() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
         position="fixed"
-        sx={{ backgroundColor: '#fff', color: '#000' ,top:0 ,left:0, zIndex:(theme) => theme.zIndex.drawer+1}}
+        sx={{ backgroundColor: '#fff', color: '#000', top: 0, left: 0, zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
+
         <Toolbar>
-          <IconButton size="large" edge="start" color="inherit" onClick={toggleDrawer}>
-            <MenuIcon />
-          </IconButton>
+          <Tooltip title="Main Menu">
+            <IconButton size="large" edge="start" color="inherit" onClick={toggleDrawer}>
+              <MenuIcon />
+            </IconButton></Tooltip>
 
           <img
             src="https://www.gstatic.com/images/branding/product/2x/keep_2020q4_48dp.png"
@@ -89,9 +93,10 @@ export default function App() {
             style={{ width: 40, height: 40 }}
           />
 
-          <Typography variant="h6" sx={{ ml: 1, mr: 3 }}>
-            Keep
-          </Typography>
+          <Tooltip title="FunDoo">
+            <Typography variant="h6" sx={{ ml: 1, mr: 3 }}>
+              FunDoo
+            </Typography></Tooltip>
 
           <Search>
             <SearchIconWrapper>
@@ -102,21 +107,26 @@ export default function App() {
 
           <Box sx={{ flexGrow: 1 }} />
 
-          <IconButton size="large" color="inherit">
-            <RefreshOutlinedIcon />
-          </IconButton>
+          <Tooltip title="Refresh">
+            <IconButton size="large" color="inherit">
+              <RefreshOutlinedIcon />
+            </IconButton>
+          </Tooltip>
 
-          <IconButton size="large" color="inherit">
-            <GridViewOutlinedIcon />
-          </IconButton>
+          <Tooltip title="Grid View">
+            <IconButton size="large" color="inherit">
+              <GridViewOutlinedIcon />
+            </IconButton></Tooltip>
 
-          <IconButton size="large" color="inherit">
-            <SettingsOutlinedIcon />
-          </IconButton>
+          <Tooltip title="Settings">
+            <IconButton size="large" color="inherit">
+              <SettingsOutlinedIcon />
+            </IconButton></Tooltip>
 
-          <IconButton size="large" color="inherit">
-            <AppsOutlinedIcon />
-          </IconButton>
+          <Tooltip title="Google Apps">
+            <IconButton size="large" color="inherit">
+              <AppsOutlinedIcon />
+            </IconButton></Tooltip>
           <IconButton
             size="large"
             edge="end"
@@ -131,7 +141,7 @@ export default function App() {
       <Menu anchorEl={anchorEl} open={isMenuOpen} onClose={handleMenuClose}>
         <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
         <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-        
+
       </Menu>
     </Box>
   );
