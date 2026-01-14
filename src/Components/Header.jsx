@@ -21,6 +21,8 @@ import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined';
 import AppsOutlinedIcon from '@mui/icons-material/AppsOutlined';
 import Tooltip from '@mui/material/Tooltip';
 
+import Poper from './Poper';
+
 
 import { useDrawer } from './Side-Bar-Context';
 
@@ -65,13 +67,12 @@ export default function App() {
 
   const isMenuOpen = Boolean(anchorEl);
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleProfileClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  const handleMenuClose = () => {
+  const handleClose = () => {
     setAnchorEl(null);
-    setMobileMoreAnchorEl(null);
   };
 
   return (
@@ -131,18 +132,23 @@ export default function App() {
             size="large"
             edge="end"
             color="inherit"
-            onClick={handleProfileMenuOpen}
+            onClick={handleProfileClick}
           >
             <AccountCircle />
           </IconButton>
         </Toolbar>
 
       </AppBar>
-      <Menu anchorEl={anchorEl} open={isMenuOpen} onClose={handleMenuClose}>
-        <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-        <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-
-      </Menu>
+      <Toolbar>
+        <Tooltip title="profile">
+          <IconButton color='inherit'
+          onClick={handleProfileClick}
+          >
+            <AccountCircle/>
+          </IconButton>
+        </Tooltip>
+      </Toolbar>
+      <Poper anchorEl={anchorEl} onclose={handleClose}/>
     </Box>
   );
 }

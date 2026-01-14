@@ -1,7 +1,7 @@
 import React from 'react'
 import FunDoo from './Dashboard/FunDoo'
 import SignIn from './Pages/SignIn/SignIn'
-import SignUp from './Pages/SignUp/SignUp'
+import SignUp from './Pages/signUp/SignUp'
 import {Route, Routes} from 'react-router-dom'
 
 
