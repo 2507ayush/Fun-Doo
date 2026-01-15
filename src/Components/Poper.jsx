@@ -20,7 +20,9 @@ function Poper({anchorEl, onclose}) {
             mt: 5,
             p: 2,
             borderRadius: 3,
-            boxShadow: 4
+            boxShadow: 4,
+            backgroundColor:'beige',
+            textTransform:'none'
         }}>        
 
                 <Box sx={{display:"flex",justifyContent:'center'}}>
