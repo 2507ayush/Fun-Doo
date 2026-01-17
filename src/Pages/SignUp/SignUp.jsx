@@ -35,23 +35,23 @@ function SignUp() {
     let newErrors = {};
     localStorage.setItem('userData',JSON.stringify(formData))
     if (!formData.firstName.match(/^[A-Za-z]{2,}$/)) {
-      newErrors.firstName = "Enter a valid first name";
+      newErrors.firstName = "enter a valid first name*";
     }
 
     if (!formData.lastName.match(/^[A-Za-z]{2,}$/)) {
-      newErrors.lastName = "Enter a valid last name";
+      newErrors.lastName = "enter a valid last name*";
     }
 
     if (!formData.email.endsWith("@gmail.com")) {
-      newErrors.email = "Email must end with @gmail.com";
+      newErrors.email = "email must end with @gmail.com*";
     }
 
     if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
+      newErrors.password = "password must be at least 8 characters*";
     }
 
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
+      newErrors.confirmPassword = "passwords do not match*";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -82,8 +82,12 @@ function SignUp() {
                 Fundoo
               </Typography>
 
-              <Typography variant="h5" sx={{ mt: 1, mb: 3 }}>
+              <Typography variant="h5" sx={{ mt: 1}}>
                 Create your Fundoo Account
+              </Typography>
+
+              <Typography variant="h6" sx={{ mb: 3 }}>
+                to continue to Fundoo
               </Typography>
 
               {/* First & Last Name */}
@@ -208,7 +212,7 @@ function SignUp() {
               />
 
               <Typography variant="body2" color="text.secondary" align="center">
-                One account. All of Fundoo working for you
+                One account. All of Fundoo <br/>working for you
               </Typography>
             </Box>
 

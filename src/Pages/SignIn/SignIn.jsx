@@ -36,15 +36,15 @@ function SignIn() {
   }
 
   if (!formData.email.endsWith("@gmail.com")) {
-    newErrors.email = "Email must end with @gmail.com";
+    newErrors.email = "email must end with @gmail.com*";
   } else if (formData.email !== userData.email) {
-    newErrors.email = "Email does not match";
+    newErrors.email = "email does not match*";
   }
 
   if (formData.password.length < 8) {
-    newErrors.password = "Password must be at least 8 characters";
+    newErrors.password = "password must be at least 8 characters*";
   } else if (formData.password !== userData.password) {
-    newErrors.password = "Password is incorrect";
+    newErrors.password = "password is incorrect*";
   }
 
   if (Object.keys(newErrors).length > 0) {
@@ -72,11 +72,12 @@ function SignIn() {
           <Typography
             variant="h6"
             sx={{ color: "#1a73e8", fontWeight: 600 }}
+            textAlign="center"
           >
             Fundoo
           </Typography>
 
-          <Typography variant="h5" sx={{ mt: 1 }}>
+          <Typography variant="h5" sx={{ mt: 1 }} textAlign="center">
             Sign in
           </Typography>
 
@@ -84,6 +85,7 @@ function SignIn() {
             variant="body2"
             color="text.secondary"
             sx={{ mb: 3 }}
+            textAlign="center"
           >
             to continue to Fundoo
           </Typography>
@@ -147,7 +149,7 @@ function SignIn() {
               }}
               component={Link} to="/signup"
             >
-              BACK TO SIGN UP?
+              Create Account
             </Button>
 
             <Button

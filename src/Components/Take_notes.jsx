@@ -17,38 +17,44 @@ import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
 import IconButton from '@mui/material/IconButton';
 import Icon_buttons from './Icon_buttons';
+import { useDrawer } from './Side-Bar-Context';
+import { use } from 'react';
 
 
 function Take_notes() {
+
+    const {open} = useDrawer();
     const [expand,setExpand] = useState(false);
     const handleClick = () => {
         setExpand(true);
     }
+    const opening = open?60:40;
+    const closing = open?0:-10;
   return (
-    <Box  sx={{display:'flex', '& .MuiPaper-root': {width:'80%', height:'20%'},ml:60,mt:3, flexDirection:'space-between'}}>
-    <Paper elevation={3} sx={{padding:0,margin:0,boxSizing:'border-box'}}>
+    <Box  sx={{display:'flex', '& .MuiPaper-root': {transform:`translateX(${closing}px)`,width:'600px', height:'20%'},ml:opening,mt:3, flexDirection:'space-between'}}>
+    <Paper elevation={3} sx={{paddingLeft:1,margin:0,boxSizing:'border-box'}}>
         {!expand ? (
-        <Box sx={{display:'flex',alignItems:'center'}}>
+        <Box sx={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
       <TextareaAutosize
       onClick={handleClick}
       aria-label='emty textarea'
       placeholder='Take a note...'
-      style={{width:'70%',height:'2%',border:'none',outline:'none',fontSize:'1.0rem',resize:'none'}}
+      style={{width:'70%',height:'2%',border:'none',outline:'none',fontSize:'1.0rem',resize:'none',paddingRight:'5px'}}
       />
       
       <Tooltip title="New List">
         <IconButton size='extra-small' >
-        <CheckBoxOutlinedIcon sx={{ml:2}}/>
+        <CheckBoxOutlinedIcon sx={{}}/>
         </IconButton>
       </Tooltip>
       <Tooltip title="New note with drawing">
         <IconButton size='small' >
-        <BrushOutlinedIcon sx={{ml:2}}/>
+        <BrushOutlinedIcon sx={{}}/>
         </IconButton>
       </Tooltip>
       <Tooltip title="New note with image">
         <IconButton size='small'>
-        <ImageOutlinedIcon sx={{ml:2}}/>
+        <ImageOutlinedIcon sx={{}}/>
         </IconButton>
       </Tooltip>
       </Box>

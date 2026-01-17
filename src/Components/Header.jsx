@@ -63,7 +63,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function App() {
   const { toggleDrawer } = useDrawer();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
 
@@ -99,7 +98,7 @@ export default function App() {
               FunDoo
             </Typography></Tooltip>
 
-          <Search>
+          <Search sx={{backgroundColor:'#edf2fa'}}>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -109,23 +108,23 @@ export default function App() {
           <Box sx={{ flexGrow: 1 }} />
 
           <Tooltip title="Refresh">
-            <IconButton size="large" color="inherit">
+            <IconButton size="large" color="inherit" style={{opacity:'0.5'}}>
               <RefreshOutlinedIcon />
             </IconButton>
           </Tooltip>
 
           <Tooltip title="Grid View">
-            <IconButton size="large" color="inherit">
+            <IconButton size="large" color="inherit" style={{opacity:'0.5'}}>
               <GridViewOutlinedIcon />
             </IconButton></Tooltip>
 
           <Tooltip title="Settings">
-            <IconButton size="large" color="inherit">
+            <IconButton size="large" color="inherit" style={{opacity:'0.5'}}>
               <SettingsOutlinedIcon />
             </IconButton></Tooltip>
 
           <Tooltip title="Google Apps">
-            <IconButton size="large" color="inherit">
+            <IconButton size="large" color="inherit" style={{opacity:'0.5'}}>
               <AppsOutlinedIcon />
             </IconButton></Tooltip>
           <IconButton
@@ -133,6 +132,7 @@ export default function App() {
             edge="end"
             color="inherit"
             onClick={handleProfileClick}
+            style={{opacity:'0.5'}}
           >
             <AccountCircle />
           </IconButton>
