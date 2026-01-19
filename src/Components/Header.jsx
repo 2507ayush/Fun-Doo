@@ -22,9 +22,11 @@ import AppsOutlinedIcon from '@mui/icons-material/AppsOutlined';
 import Tooltip from '@mui/material/Tooltip';
 
 import Poper from './Poper';
+import { useLocation } from 'react-router-dom';
 
 
 import { useDrawer } from './Side-Bar-Context';
+import FunDoo from '../Dashboard/FunDoo';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -63,6 +65,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function App() {
   const { toggleDrawer } = useDrawer();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const location = useLocation();
+  const title = location.pathname==='/'? 'FundooNotes' : location.pathname.slice(1).charAt(0).toUpperCase() + location.pathname.slice(2);
 
   const isMenuOpen = Boolean(anchorEl);
 
@@ -90,12 +94,12 @@ export default function App() {
           <img
             src="https://www.gstatic.com/images/branding/product/2x/keep_2020q4_48dp.png"
             alt="Keep"
-            style={{ width: 40, height: 40 }}
+            style={{ width: 40, height: 40, display:title === 'FundooNotes'?'block':'none'}}
           />
 
           <Tooltip title="FunDoo">
             <Typography variant="h6" sx={{ ml: 1, mr: 3 }}>
-              FunDoo
+              {title}
             </Typography></Tooltip>
 
           <Search sx={{backgroundColor:'#edf2fa'}}>

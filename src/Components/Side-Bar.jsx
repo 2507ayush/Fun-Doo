@@ -13,13 +13,14 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import Toolbar from '@mui/material/Toolbar';
 import { useState } from 'react';
 import { useDrawer } from './Side-Bar-Context'
+import { useNavigate,useLocation } from 'react-router-dom';
 
 
 
 const menuItems = [
   { text: 'Notes', icon: LightbulbOutlinedIcon },
   { text: 'Reminder', icon: NotificationsNoneOutlinedIcon },
-  { text: 'Edit Labels', icon: EditOutlinedIcon },
+  { text: 'Edit_Labels', icon: EditOutlinedIcon },
   { text: 'Archive', icon: ArchiveOutlinedIcon },
   { text: 'Trash', icon: DeleteOutlinedIcon },
 ];
@@ -28,6 +29,10 @@ const menuItems = [
 export default function Sidebar() {
     const { open } = useDrawer();
     let drawerWidth = open?270:72;
+    const navigate = useNavigate();
+    const handleClick = (text) => {
+      navigate(text === 'Notes' ? '/' : `/${text.toLowerCase()}`);
+    }
 
   return (
     <>
@@ -56,7 +61,7 @@ export default function Sidebar() {
                   borderBottomRightRadius: '50px',
                 }}
               >
-                <ListItemButton>
+                <ListItemButton onClick={() => handleClick(item.text)}>
                   <ListItemIcon sx={{ minWidth: 48 }}> {/* Better spacing for icons */}
                     <item.icon />
                   </ListItemIcon>
