@@ -8,7 +8,10 @@ import {
   Typography,
 } from "@mui/material";
 
-import { useNavigate,Link } from "react-router-dom";
+import api from "../../services/Api";
+
+
+import { useNavigate, Link } from "react-router-dom";
 import shield from "../../assets/signup.jpeg";
 
 function SignUp() {
@@ -30,10 +33,10 @@ function SignUp() {
     });
   };
 
-  
-  const handleSubmit = () => {
+
+  const handleSubmit = async () => {
     let newErrors = {};
-    localStorage.setItem('userData',JSON.stringify(formData))
+
     if (!formData.firstName.match(/^[A-Za-z]{2,}$/)) {
       newErrors.firstName = "enter a valid first name*";
     }
@@ -56,9 +59,30 @@ function SignUp() {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-    } else {
-      setErrors({});
-      navigate('/');
+      return;
+    }
+
+    try {
+      // 🔍 Check if email already exists
+      const res = await api.get(`/users?email=${formData.email}`);
+
+      if (res.data.length > 0) {
+        setErrors({ email: "Email already registered*" });
+        return;
+      }
+
+      // 📤 Save user to JSON Server
+      await api.post("/users", {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      alert("Signup successful");
+      navigate("/signin");
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -75,14 +99,14 @@ function SignUp() {
       <Card sx={{ width: 900 }}>
         <CardContent sx={{ p: 4 }}>
           <Box sx={{ display: "flex" }}>
-            
+
             {/* LEFT SECTION */}
             <Box sx={{ flex: 1, pr: 4 }}>
               <Typography variant="h6" sx={{ color: "#1a73e8", fontWeight: 600 }}>
                 Fundoo
               </Typography>
 
-              <Typography variant="h5" sx={{ mt: 1}}>
+              <Typography variant="h5" sx={{ mt: 1 }}>
                 Create your Fundoo Account
               </Typography>
 
@@ -212,7 +236,7 @@ function SignUp() {
               />
 
               <Typography variant="body2" color="text.secondary" align="center">
-                One account. All of Fundoo <br/>working for you
+                One account. All of Fundoo <br />working for you
               </Typography>
             </Box>
 

@@ -18,21 +18,31 @@ import RedoIcon from '@mui/icons-material/Redo';
 import IconButton from '@mui/material/IconButton';
 import { useDrawer } from './Side-Bar-Context';
 import Popover from "@mui/material/Popover";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 
 
 function Take_notes() {
+  
+  const [noteColor, setNoteColor] = useState("#ffffff");
+  const [anchorEl, setAnchorEl] = useState(null);
   const { open } = useDrawer();
   const [expand, setexpand] = useState(false);
-  // when click on notes then its section appear
 
   const handleClick = () => {
     setexpand(true);
   }
+
+  const handleClose = () => {
+    setexpand(false);
+  }
+
+  const Anchor = (event) => {
+    setAnchorEl(anchorEl? null : event.currentTarget)
+  }
+
   const opening = open ? 60 : 40;
   const close = open ? 0 : -10;
 
-  const [noteColor, setNoteColor] = useState("#ffffff");
-  const [anchorEl, setAnchorEl] = useState(null);
   const colors = [
     "#ffffff",
     "#f28b82",
@@ -46,19 +56,20 @@ function Take_notes() {
   ];
 
 
+
   const openColor = Boolean(anchorEl);
 
   return (
     <Box
       sx={{
-        display: 'flex', '& .MuiPaper-root': { transform: `translateX(${close}px)`, width: '600px', height: '20%' }, ml: opening, mt: 3, flexDirection: 'space-between'
+        display: 'flex', '& .MuiPaper-root': { transform: `translateX(${close}px)`, width: '600px', height: '10%',borderRadius:2 }, ml: opening, mt: 3, flexDirection: 'space-between'
       }}
 
     >
       <Paper
         elevation={2}
         sx={{
-          p: 2,
+          p: 1,
           boxSizing: "border-box",
           backgroundColor: noteColor
         }}
@@ -87,7 +98,7 @@ function Take_notes() {
         )
           : (
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', padding: 1 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column',height:'120px' }}>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <TextareaAutosize
                   aria-label="note title"
@@ -125,35 +136,48 @@ function Take_notes() {
                   display: "flex",
                   alignItems: "center",
                   flexWrap: "nowrap",
-                  marginTop: "20px",
+                  marginTop: "10px",
                 }}
               >
 
-                <Tooltip title="formatting options" sx={{ opacity: '0.7' }}>
+                <Tooltip title="formatting options" sx={{ opacity: '1',cursor:'pointer',pl:0}}>
+                <IconButton>
                   <FormatColorTextOutlinedIcon />
+                  </IconButton>
                 </Tooltip>
+                
                 <Tooltip title="change color">
                   <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
-                    <ColorLensOutlinedIcon sx={{ opacity: "0.7" }} />
+                    <ColorLensOutlinedIcon sx={{ cursor:'pointer',pl:1,pr:1 }} />
                   </IconButton>
                 </Tooltip>
 
                 <Tooltip title="remind me">
-                  <AddAlertOutlinedIcon sx={{ ml: 5, opacity: '0.7' }} />
+                  <IconButton>
+                  <AddAlertOutlinedIcon sx={{ pl:1,pr:1,cursor:'pointer' }} />
+                  </IconButton>
                 </Tooltip>
                 <Tooltip title="collaborator">
-                  <PersonAddAlt1OutlinedIcon sx={{ ml: 5, opacity: '0.7' }} />
+                  <IconButton>
+                  <PersonAddAlt1OutlinedIcon sx={{ pl:1,pr:1,cursor:'pointer' }} />
+                  </IconButton>
                 </Tooltip>
                 <Tooltip title="add img">
-                  <ImageOutlinedIcon sx={{ ml: 5, opacity: '0.7' }} />
+                <IconButton>
+                  <ImageOutlinedIcon sx={{ pl:1,pr:1,cursor:'pointer' }} />
+                  </IconButton>
                 </Tooltip>
                 <Tooltip title="archive">
-                  <ArchiveOutlinedIcon sx={{ ml: 5, opacity: '0.7' }} />
+                <IconButton>
+                  <ArchiveOutlinedIcon sx={{ pl:1,pr:1,cursor:'pointer' }} />
+                  </IconButton>
                 </Tooltip>
                 <Tooltip title="more options">
-                  <MoreVertOutlinedIcon sx={{ ml: 5, opacity: '0.7' }} />
+                <IconButton>
+                  <MoreVertOutlinedIcon sx={{ textAlign:'center',pl:1,pr:1,cursor:'pointer' }} />
+                  </IconButton>
                 </Tooltip>
-                <Typography sx={{ marginLeft: 'auto', mr: 3, color: 'black', borderRadius: 8, cursor: 'pointer' }}>
+                <Typography sx={{ opacity:0.8,marginLeft: 'auto', mr: 2, color: 'black', borderRadius: 8, cursor: 'pointer' } } onClick={handleClose}>
                   Close
                 </Typography>
               </div>
@@ -211,4 +235,4 @@ function Take_notes() {
   )
 }
 
-export default Take_notes;
+export default Take_notes

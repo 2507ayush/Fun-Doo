@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "id": "bf28",
+      "firstName": "Ayushman",
+      "lastName": "Verma",
+      "email": "vermamaan55@gmail.com",
+      "password": "12345678"
+    },
+    {
+      "id": "16ef",
+      "firstName": "Pari",
+      "lastName": "Verma",
+      "email": "Pari@gmail.com",
+      "password": "87654321"
+    },
+    {
+      "id": "7db2",
+      "firstName": "Ayush",
+      "lastName": "Agarwal",
+      "email": "ayush@gmail.com",
+      "password": "12345678"
+    }
+  ]
+}
