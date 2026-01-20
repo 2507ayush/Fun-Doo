@@ -20,6 +20,55 @@
       "lastName": "Agarwal",
       "email": "ayush@gmail.com",
       "password": "12345678"
+    },
+    {
+      "id": "17ee",
+      "firstName": "Khushi",
+      "lastName": "Tomar",
+      "email": "khushiT@gmail.com",
+      "password": "12344321"
+    }
+  ],
+  "notes": [
+    {
+      "id": "c77b",
+      "title": "dfgjndcjhderejjqwdcnsxjbhvgcghghjkhgfxchjka",
+      "description": "fghj",
+      "bgcolor": "#d7aefb",
+      "archive": false,
+      "Trash": false
+    },
+    {
+      "id": "e539",
+      "title": "xdfghjvcggvhbjkjlb",
+      "description": "dfgbh",
+      "bgcolor": "#a7ffeb",
+      "archive": false,
+      "Trash": false
+    },
+    {
+      "id": "b8cf",
+      "title": "Ayushman",
+      "description": "verma",
+      "bgcolor": "#aecbfa",
+      "archive": false,
+      "Trash": false
+    },
+    {
+      "id": "febc",
+      "title": "Shreyash Kohli",
+      "description": "From Bihar",
+      "bgcolor": "#fbbc04",
+      "archive": false,
+      "Trash": false
+    },
+    {
+      "id": "b4f4",
+      "title": "Virat Kohli",
+      "description": "",
+      "bgcolor": "#f28b82",
+      "archive": false,
+      "Trash": false
     }
   ]
 }

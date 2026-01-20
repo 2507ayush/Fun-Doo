@@ -20,6 +20,7 @@ import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined';
 import AppsOutlinedIcon from '@mui/icons-material/AppsOutlined';
 import Tooltip from '@mui/material/Tooltip';
+import ViewStreamOutlinedIcon from '@mui/icons-material/ViewStreamOutlined';
 
 import Poper from './Poper';
 import { useLocation } from 'react-router-dom';
@@ -63,10 +64,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function App() {
-  const { toggleDrawer } = useDrawer();
+  const { toggleDrawer,handlePattern,click } = useDrawer();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const location = useLocation();
-  const title = location.pathname==='/'? 'FundooNotes' : location.pathname.slice(1).charAt(0).toUpperCase() + location.pathname.slice(2);
+  const title = location.pathname==='/'? 'FunDoo' : location.pathname.slice(1).charAt(0).toUpperCase() + location.pathname.slice(2);
 
   const isMenuOpen = Boolean(anchorEl);
 
@@ -94,7 +95,7 @@ export default function App() {
           <img
             src="https://www.gstatic.com/images/branding/product/2x/keep_2020q4_48dp.png"
             alt="Keep"
-            style={{ width: 40, height: 40, display:title === 'FundooNotes'?'block':'none'}}
+            style={{ width: 40, height: 40, display:title === 'FunDoo'?'block':'none'}}
           />
 
           <Tooltip title="FunDoo">
@@ -118,8 +119,8 @@ export default function App() {
           </Tooltip>
 
           <Tooltip title="Grid View">
-            <IconButton size="large" color="inherit" style={{opacity:'0.5'}}>
-              <GridViewOutlinedIcon />
+            <IconButton size="large" color="inherit" style={{opacity:'0.5'}} onClick={handlePattern}>
+              {click?<GridViewOutlinedIcon />:<ViewStreamOutlinedIcon/>} 
             </IconButton></Tooltip>
 
           <Tooltip title="Settings">

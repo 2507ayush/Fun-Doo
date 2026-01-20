@@ -19,29 +19,103 @@ import IconButton from '@mui/material/IconButton';
 import { useDrawer } from './Side-Bar-Context';
 import Popover from "@mui/material/Popover";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import List_view from './List_view';  
+import Grid_view from './Grid_view';
 
 
 function Take_notes() {
-  
+
+  const navigate = useNavigate();
   const [noteColor, setNoteColor] = useState("#ffffff");
   const [anchorEl, setAnchorEl] = useState(null);
-  const { open } = useDrawer();
+  const { open,click } = useDrawer();
   const [expand, setexpand] = useState(false);
+  const [saved,setSaved] = useState([]);
+  const [note, setNote] = useState({
+    title: '',
+    description: '',
+    bgcolor: '#fff',
+  });
 
   const handleClick = () => {
     setexpand(true);
   }
 
-  const handleClose = () => {
-    setexpand(false);
-  }
+  const handleClose = async() => {
+    if(!note.title.trim() && !note.description.trim()){
+      setexpand(false);
+      return;
+    }
+    const payload={
+      title:note.title,
+      description:note.description,
+      bgcolor:note.bgcolor,
+      archive:false,
+      Trash:false,
+    }
+    try{
+      const res=await fetch('http://localhost:5000/notes',{
+        method:"POST",
+        headers: {"Content-type":"application/json"},
+        body: JSON.stringify(payload)
+      })
+      const data=await res.json();
+      setSaved(prev => {
+        if(!prev.some(n => n.id === data.id)) return [...prev, data];
+        return prev;
+      });
+
+      setNote({
+        title:'',
+        description:'',
+        bgcolor:'#fff'
+      });
+      setNoteColor('#fff');
+      setexpand(false);
+      setAnchorEl(null);
+    }
+    catch(error){
+      console.log(error)
+    }
+  };
 
   const Anchor = (event) => {
-    setAnchorEl(anchorEl? null : event.currentTarget)
+    setAnchorEl(anchorEl ? null : event.currentTarget)
   }
 
   const opening = open ? 60 : 40;
   const close = open ? 0 : -10;
+
+  const currentid = JSON.parse(localStorage.getItem('userData'));
+  useEffect(() => {
+    if(!currentid){
+      navigate('/signin');
+      return;      
+    }
+    let valid=true;
+    const fetchNotes = async () => {
+      try{
+        const res = await fetch(`http://localhost:5000/notes?userId=$(currentid.id)&archive=false&trash=false`);
+        const data = await res.json();
+
+        if(valid){
+          setSaved(Array.isArray(data)?data:[]);
+        }
+      }
+      catch(error){
+        console.log(error);
+      }
+    };
+
+    fetchNotes();
+
+    return () => {
+      valid = false;
+    };
+    
+  },[currentid, navigate]);
 
   const colors = [
     "#ffffff",
@@ -55,14 +129,15 @@ function Take_notes() {
     "#d7aefb"
   ];
 
-
+console.log(note);
 
   const openColor = Boolean(anchorEl);
 
   return (
+    <>
     <Box
       sx={{
-        display: 'flex', '& .MuiPaper-root': { transform: `translateX(${close}px)`, width: '600px', height: '10%',borderRadius:2 }, ml: opening, mt: 3, flexDirection: 'space-between'
+        display: 'flex', '& .MuiPaper-root': { transform: `translateX(${close}px)`, width: '600px', height: '10%', borderRadius: 2 }, ml: opening, mt: 3, flexDirection: 'space-between'
       }}
 
     >
@@ -71,7 +146,8 @@ function Take_notes() {
         sx={{
           p: 1,
           boxSizing: "border-box",
-          backgroundColor: noteColor
+          backgroundColor: noteColor,
+          position:'relative'
         }}
       >
 
@@ -98,7 +174,7 @@ function Take_notes() {
         )
           : (
 
-            <Box sx={{ display: 'flex', flexDirection: 'column',height:'120px' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column'}}>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <TextareaAutosize
                   aria-label="note title"
@@ -111,6 +187,10 @@ function Take_notes() {
                     marginBottom: '10px',
                     backgroundColor: "transparent"
                   }}
+                  value={note.title}
+                  onChange={(e) =>
+                    setNote(prev => ({...prev,title:e.target.value}))
+                  }
                 />
 
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
@@ -129,6 +209,10 @@ function Take_notes() {
                   resize: 'none',
                   backgroundColor: "transparent"
                 }}
+                value={note.description}
+                  onChange={(e) =>
+                    setNote(prev => ({...prev,description:e.target.value}))
+                  }
               />
 
               <div
@@ -140,44 +224,44 @@ function Take_notes() {
                 }}
               >
 
-                <Tooltip title="formatting options" sx={{ opacity: '1',cursor:'pointer',pl:0}}>
-                <IconButton>
-                  <FormatColorTextOutlinedIcon />
+                <Tooltip title="formatting options" sx={{ opacity: '1', cursor: 'pointer', pl: 0 }}>
+                  <IconButton>
+                    <FormatColorTextOutlinedIcon />
                   </IconButton>
                 </Tooltip>
-                
+
                 <Tooltip title="change color">
                   <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
-                    <ColorLensOutlinedIcon sx={{ cursor:'pointer',pl:1,pr:1 }} />
+                    <ColorLensOutlinedIcon sx={{ cursor: 'pointer', pl: 1, pr: 1 }} />
                   </IconButton>
                 </Tooltip>
 
                 <Tooltip title="remind me">
                   <IconButton>
-                  <AddAlertOutlinedIcon sx={{ pl:1,pr:1,cursor:'pointer' }} />
+                    <AddAlertOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="collaborator">
                   <IconButton>
-                  <PersonAddAlt1OutlinedIcon sx={{ pl:1,pr:1,cursor:'pointer' }} />
+                    <PersonAddAlt1OutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="add img">
-                <IconButton>
-                  <ImageOutlinedIcon sx={{ pl:1,pr:1,cursor:'pointer' }} />
+                  <IconButton>
+                    <ImageOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="archive">
-                <IconButton>
-                  <ArchiveOutlinedIcon sx={{ pl:1,pr:1,cursor:'pointer' }} />
+                  <IconButton>
+                    <ArchiveOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="more options">
-                <IconButton>
-                  <MoreVertOutlinedIcon sx={{ textAlign:'center',pl:1,pr:1,cursor:'pointer' }} />
+                  <IconButton>
+                    <MoreVertOutlinedIcon sx={{ textAlign: 'center', pl: 1, pr: 1, cursor: 'pointer' }} />
                   </IconButton>
                 </Tooltip>
-                <Typography sx={{ opacity:0.8,marginLeft: 'auto', mr: 2, color: 'black', borderRadius: 8, cursor: 'pointer' } } onClick={handleClose}>
+                <Typography sx={{ opacity: 0.8, marginLeft: 'auto', mr: 2, color: 'black', borderRadius: 8, cursor: 'pointer' }} onClick={handleClose}>
                   Close
                 </Typography>
               </div>
@@ -207,7 +291,7 @@ function Take_notes() {
                       key={color}
                       onClick={() => {
                         setNoteColor(color);
-
+                        setNote(prev => ({...prev,bgcolor:color}));
                       }}
 
                       sx={{
@@ -231,7 +315,11 @@ function Take_notes() {
         }
       </Paper>
     </Box>
-
+    {
+    click?<List_view saved={saved} setSaved={setSaved}/>:
+    <Grid_view saved={saved} setSaved={setSaved}/>
+    }
+    </>
   )
 }
 
