@@ -19,9 +19,10 @@ import IconButton from '@mui/material/IconButton';
 import { useDrawer } from './Side-Bar-Context';
 import Popover from "@mui/material/Popover";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 export default function Grid_view({ saved, setSaved }) {
-    const {open} = useDrawer();
+  const { open } = useDrawer();
 
   const colors = [
     "#ffffff",
@@ -90,21 +91,55 @@ export default function Grid_view({ saved, setSaved }) {
     setActiveIndex(null);
   };
 
+  const handleDelete = async (index) => {
+    const note = saved[index];
+    if (!note) return;
+  
+  
+    setSaved(prev => prev.filter((_, i) => i !== index));
+  
+    try {
+      await fetch(`http://localhost:5000/notes/${note.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ Trash: true }),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleA = async (index) => {
+        const note = saved[index];
+        if (!note) return;
+
+        setSaved(prev => prev.filter((_, i) => i !== index));
+
+        try {
+            await fetch(`http://localhost:5000/notes/${note.id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ Archive: true }),
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
   return (
     <>
-      {/* 🔥 GRID CONTAINER */}
       <Box
         sx={{
           display: "grid",
           gridTemplateColumns: {
-            xs: "1fr",
+            xs: "2fr",
             sm: "repeat(2, 1fr)",
             md: "repeat(2, 1fr)",
           },
           gap: 2,
           mt: 5,
-          ml:open?50:20,
-          px: 3,
+          ml: open ? 40 : 20,
+          px: 3
         }}
       >
         {saved.map((note, index) => (
@@ -160,10 +195,10 @@ export default function Grid_view({ saved, setSaved }) {
 
 
               <Tooltip title="formatting options" sx={{ opacity: '1', cursor: 'pointer', pl: 0 }}>
-                                <IconButton>
-                                    <FormatColorTextOutlinedIcon />
-                                </IconButton>
-                            </Tooltip>
+                <IconButton>
+                  <FormatColorTextOutlinedIcon />
+                </IconButton>
+              </Tooltip>
 
               <Tooltip title="Change color">
                 <IconButton
@@ -172,31 +207,36 @@ export default function Grid_view({ saved, setSaved }) {
                   <ColorLensOutlinedIcon />
                 </IconButton>
               </Tooltip><Tooltip title="remind me">
-                                <IconButton>
-                                    <AddAlertOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title="collaborator">
-                                <IconButton>
-                                    <PersonAddAlt1OutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title="add img">
-                                <IconButton>
-                                    <ImageOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title="archive">
-                                <IconButton>
-                                    <ArchiveOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title="more options">
-                                <IconButton>
-                                    <MoreVertOutlinedIcon sx={{ textAlign: 'center', pl: 1, pr: 1, cursor: 'pointer' }} />
-                                </IconButton>
-                            </Tooltip>
-                            
+                <IconButton>
+                  <AddAlertOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="collaborator">
+                <IconButton>
+                  <PersonAddAlt1OutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="add img">
+                <IconButton>
+                  <ImageOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="archive">
+                <IconButton>
+                  <ArchiveOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} onClick={()=>handleA(index)} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Delete">
+                <IconButton>
+                  <DeleteOutlineOutlinedIcon onClick={() => handleDelete(index)}/>
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="more options">
+                <IconButton>
+                  <MoreVertOutlinedIcon sx={{ textAlign: 'center', pl: 1, pr: 1, cursor: 'pointer' }} />
+                </IconButton>
+              </Tooltip>
+
             </Box>
           </Paper>
         ))}

@@ -53,7 +53,7 @@ function Take_notes() {
       description:note.description,
       bgcolor:note.bgcolor,
       archive:false,
-      Trash:false,
+      Trash:true,
     }
     try{
       const res=await fetch('http://localhost:5000/notes',{
@@ -81,23 +81,23 @@ function Take_notes() {
     }
   };
 
-  const Anchor = (event) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget)
-  }
+  // const Anchor = (event) => {
+  //   setAnchorEl(anchorEl ? null : event.currentTarget)
+  // }
 
   const opening = open ? 60 : 40;
   const close = open ? 0 : -10;
 
   const currentid = JSON.parse(localStorage.getItem('userData'));
   useEffect(() => {
-    if(!currentid){
-      navigate('/signin');
-      return;      
-    }
+    // if(!currentid){
+    //   navigate('/signin');
+    //   return;      
+    // }
     let valid=true;
     const fetchNotes = async () => {
       try{
-        const res = await fetch(`http://localhost:5000/notes?userId=$(currentid.id)&archive=false&trash=false`);
+        const res = await fetch(`http://localhost:5000/notes?userId=$(currentid.id)&Archive=false&Trash=false`);
         const data = await res.json();
 
         if(valid){

@@ -1,74 +1,56 @@
 {
   "users": [
     {
-      "id": "bf28",
+      "id": "b279",
+      "firstName": "Dharam",
+      "lastName": "Singh",
+      "email": "dhr@gmail.com",
+      "password": "12345678"
+    },
+    {
+      "id": "a26b",
       "firstName": "Ayushman",
       "lastName": "Verma",
-      "email": "vermamaan55@gmail.com",
-      "password": "12345678"
-    },
-    {
-      "id": "16ef",
-      "firstName": "Pari",
-      "lastName": "Verma",
-      "email": "Pari@gmail.com",
+      "email": "vermamaaaan55@gmail.com",
       "password": "87654321"
-    },
-    {
-      "id": "7db2",
-      "firstName": "Ayush",
-      "lastName": "Agarwal",
-      "email": "ayush@gmail.com",
-      "password": "12345678"
-    },
-    {
-      "id": "17ee",
-      "firstName": "Khushi",
-      "lastName": "Tomar",
-      "email": "khushiT@gmail.com",
-      "password": "12344321"
     }
   ],
   "notes": [
     {
-      "id": "c77b",
-      "title": "dfgjndcjhderejjqwdcnsxjbhvgcghghjkhgfxchjka",
-      "description": "fghj",
-      "bgcolor": "#d7aefb",
-      "archive": false,
-      "Trash": false
-    },
-    {
-      "id": "e539",
-      "title": "xdfghjvcggvhbjkjlb",
-      "description": "dfgbh",
-      "bgcolor": "#a7ffeb",
-      "archive": false,
-      "Trash": false
-    },
-    {
-      "id": "b8cf",
-      "title": "Ayushman",
-      "description": "verma",
-      "bgcolor": "#aecbfa",
-      "archive": false,
-      "Trash": false
-    },
-    {
-      "id": "febc",
-      "title": "Shreyash Kohli",
-      "description": "From Bihar",
-      "bgcolor": "#fbbc04",
-      "archive": false,
-      "Trash": false
-    },
-    {
-      "id": "b4f4",
-      "title": "Virat Kohli",
-      "description": "",
+      "id": "09a1",
+      "title": "Ayushman Verma",
+      "description": "AIML ",
       "bgcolor": "#f28b82",
       "archive": false,
-      "Trash": false
+      "Trash": false,
+      "Archive": false
+    },
+    {
+      "id": "a269",
+      "title": "Shreyash Singh",
+      "description": "CS",
+      "bgcolor": "#a7ffeb",
+      "archive": false,
+      "Trash": false,
+      "Archive": false
+    },
+    {
+      "id": "9a66",
+      "title": "Ayush Agarwal",
+      "description": "AIML",
+      "bgcolor": "#d7aefb",
+      "archive": false,
+      "Trash": false,
+      "Archive": false
+    },
+    {
+      "id": "8ff3",
+      "title": "Divyansh Singh",
+      "description": "AIML",
+      "bgcolor": "#ccff90",
+      "archive": false,
+      "Trash": false,
+      "Archive": true
     }
   ]
 }

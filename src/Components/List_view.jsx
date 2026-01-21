@@ -19,68 +19,105 @@ import IconButton from '@mui/material/IconButton';
 import { useDrawer } from './Side-Bar-Context';
 import Popover from "@mui/material/Popover";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import Trash from './Trash';
 
 export default function List_view({ saved, setSaved }) {
 
     const colors = [
-    "#ffffff",
-    "#f28b82",
-    "#fbbc04",
-    "#fff475",
-    "#ccff90",
-    "#a7ffeb",
-    "#cbf0f8",
-    "#aecbfa",
-    "#d7aefb"
-  ];
+        "#ffffff",
+        "#f28b82",
+        "#fbbc04",
+        "#fff475",
+        "#ccff90",
+        "#a7ffeb",
+        "#cbf0f8",
+        "#aecbfa",
+        "#d7aefb"
+    ];
 
-  const {open} = useDrawer();
-  
+    const { open } = useDrawer();
 
-  const[anchorEl, setAnchorEl] = useState(null);
-  const [activeIndex, setActiveIndex] = useState(null);
 
-    const updateNote = async(index, field, value) => {
-        setSaved(prev => 
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [activeIndex, setActiveIndex] = useState(null);
+
+    const updateNote = async (index, field, value) => {
+        setSaved(prev =>
             prev.map((note, i) =>
-                i === index  ? {...note, [field]:value} : note
+                i === index ? { ...note, [field]: value } : note
+            )
         )
-    )
-    const n = saved[index];
-    if(!n) return;
-    try {
-        await fetch(`http://localhost:5000/notes/${n.id}`,{
-            "method":"PATCH",
-            headers:{'Content-Type':'application/json'},
-            body : JSON.stringify({[field]:value}),
-        })
-        console.log(saved)
-    }    
-    catch(error){
-        console.log(error);
-    }
+        const n = saved[index];
+        if (!n) return;
+        try {
+            await fetch(`http://localhost:5000/notes/${n.id}`, {
+                "method": "PATCH",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ [field]: value }),
+            })
+            console.log(saved)
+        }
+        catch (error) {
+            console.log(error);
+        }
     };
 
-    const updateColor = async(index, color) => {
-        setSaved(prev => 
+    const updateColor = async (index, color) => {
+        setSaved(prev =>
             prev.map((note, i) =>
-                i === index  ? {...note, bgcolor:color} : note
+                i === index ? { ...note, bgcolor: color } : note
+            )
         )
-    )
-    const n = saved[index];
-    if(!n) return;
-    try {
-        await fetch(`http://localhost:5000/notes/${n.id}`,{
-            "method":"PATCH",
-            headers:{'Content-Type':'application/json'},
-            body : JSON.stringify({bgcolor:color}),
-        })
-        console.log(saved)
-    }    
-    catch(error){
-        console.log(error);
-    }
+        const n = saved[index];
+        if (!n) return;
+        try {
+            await fetch(`http://localhost:5000/notes/${n.id}`, {
+                "method": "PATCH",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ bgcolor: color }),
+            })
+            console.log(saved)
+        }
+        catch (error) {
+            console.log(error);
+        }
     };
+    const handleA = async (index) => {
+        const note = saved[index];
+        if (!note) return;
+
+        setSaved(prev => prev.filter((_, i) => i !== index));
+
+        try {
+            await fetch(`http://localhost:5000/notes/${note.id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ Archive: true }),
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleDelete = async (index) => {
+        const note = saved[index];
+        if (!note) return;
+
+
+        setSaved(prev => prev.filter((_, i) => i !== index));
+
+        try {
+            await fetch(`http://localhost:5000/notes/${note.id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ Trash: true }),
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
 
     const handleColorOpen = (event, index) => {
         setAnchorEl(event.currentTarget);
@@ -96,15 +133,16 @@ export default function List_view({ saved, setSaved }) {
         <>
             {saved.map((note, index) => (
                 <Paper
+                    key={note.id}
                     elevation={2}
                     sx={{
                         p: 1,
                         boxSizing: "border-box",
                         backgroundColor: note.bgcolor,
                         position: 'relative',
-                        mt:5,
-                        ml: open?60:38,
-                        width:'48%'
+                        mt: 5,
+                        ml: open ? 60 : 38,
+                        width: '48%'
 
                     }}
                 >
@@ -123,7 +161,7 @@ export default function List_view({ saved, setSaved }) {
                                 }}
                                 value={note.title}
                                 onChange={(e) =>
-                                    updateNote(index, 'title',e.target.value)
+                                    updateNote(index, 'title', e.target.value)
                                 }
                             />
 
@@ -145,8 +183,8 @@ export default function List_view({ saved, setSaved }) {
                             }}
                             value={note.description}
                             onChange={(e) =>
-                                    updateNote(index, 'description',e.target.value)
-                                }
+                                updateNote(index, 'description', e.target.value)
+                            }
                         />
 
                         <div
@@ -186,8 +224,13 @@ export default function List_view({ saved, setSaved }) {
                                 </IconButton>
                             </Tooltip>
                             <Tooltip title="archive">
+                                <IconButton >
+                                    <ArchiveOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} onClick={() => handleA(index)} />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Delete">
                                 <IconButton>
-                                    <ArchiveOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
+                                    <DeleteOutlineOutlinedIcon onClick={() => handleDelete(index)} />
                                 </IconButton>
                             </Tooltip>
                             <Tooltip title="more options">
@@ -214,28 +257,28 @@ export default function List_view({ saved, setSaved }) {
                             }}
                         >
                             <ClickAwayListener onClickAway={handleColorClose}>
-                            <Box sx={{ display: "flex", p: 1 }}>
-                                {colors.map((color) => (
-                                    <Box
-                                        key={color}
-                                        
-                                        sx={{
-                                            width: 24,
-                                            height: 24,
-                                            borderRadius: "50%",
-                                            backgroundColor: color,
-                                            cursor: "pointer",
-                                            m: 0.5,
-                                            // mr:10,
-                                            border: "1px solid #ccc",
-                                        }}
-                                        onClick={() => {
-                                            updateColor(activeIndex, color);
-                                            handleColorClose();
-                                        }}
-                                    />
-                                ))}
-                            </Box>
+                                <Box sx={{ display: "flex", p: 1 }}>
+                                    {colors.map((color) => (
+                                        <Box
+                                            key={color}
+
+                                            sx={{
+                                                width: 24,
+                                                height: 24,
+                                                borderRadius: "50%",
+                                                backgroundColor: color,
+                                                cursor: "pointer",
+                                                m: 0.5,
+                                                // mr:10,
+                                                border: "1px solid #ccc",
+                                            }}
+                                            onClick={() => {
+                                                updateColor(activeIndex, color);
+                                                handleColorClose();
+                                            }}
+                                        />
+                                    ))}
+                                </Box>
                             </ClickAwayListener>
                         </Popover>
 
@@ -246,6 +289,7 @@ export default function List_view({ saved, setSaved }) {
                 </Paper>
 
             ))}
+
 
         </>
     )

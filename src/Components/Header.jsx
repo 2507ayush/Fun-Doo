@@ -118,10 +118,9 @@ export default function App() {
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Grid View">
             <IconButton size="large" color="inherit" style={{opacity:'0.5'}} onClick={handlePattern}>
-              {click?<GridViewOutlinedIcon />:<ViewStreamOutlinedIcon/>} 
-            </IconButton></Tooltip>
+              {click?<Tooltip title="List View"><ViewStreamOutlinedIcon/></Tooltip>:<Tooltip title="Grid View"><GridViewOutlinedIcon /></Tooltip>} 
+            </IconButton>
 
           <Tooltip title="Settings">
             <IconButton size="large" color="inherit" style={{opacity:'0.5'}}>
