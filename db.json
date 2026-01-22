@@ -35,8 +35,17 @@
       "Archive": false
     },
     {
-      "id": "9a66",
+      "id": "ce99",
       "title": "Ayush Agarwal",
+      "description": "AIML",
+      "bgcolor": "#ccff90",
+      "archive": false,
+      "Trash": false,
+      "Archive": false
+    },
+    {
+      "id": "6122",
+      "title": "Divyansh Singh",
       "description": "AIML",
       "bgcolor": "#d7aefb",
       "archive": false,
@@ -44,13 +53,21 @@
       "Archive": false
     },
     {
-      "id": "8ff3",
-      "title": "Divyansh Singh",
-      "description": "AIML",
-      "bgcolor": "#ccff90",
+      "id": "b80a",
+      "title": "Ankur Sinsinwar",
+      "description": "IIOT CS",
+      "bgcolor": "#fff475",
       "archive": false,
       "Trash": false,
-      "Archive": true
+      "Archive": false
+    },
+    {
+      "id": "9ea8",
+      "title": "Amitabh Singh ",
+      "description": "AIML",
+      "bgcolor": "#cbf0f8",
+      "Archive": false,
+      "Trash": false
     }
   ]
 }

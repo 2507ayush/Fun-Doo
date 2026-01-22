@@ -1,10 +1,7 @@
 import React, { useState } from 'react'
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import { TextareaAutosize, Tooltip } from '@mui/material';
-import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
-import BrushOutlinedIcon from '@mui/icons-material/BrushOutlined';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import FormatColorTextOutlinedIcon from '@mui/icons-material/FormatColorTextOutlined';
@@ -13,14 +10,11 @@ import AddAlertOutlinedIcon from '@mui/icons-material/AddAlertOutlined';
 import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
 import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
-import UndoIcon from '@mui/icons-material/Undo';
-import RedoIcon from '@mui/icons-material/Redo';
 import IconButton from '@mui/material/IconButton';
 import { useDrawer } from './Side-Bar-Context';
 import Popover from "@mui/material/Popover";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import Trash from './Trash';
 
 export default function List_view({ saved, setSaved }) {
 

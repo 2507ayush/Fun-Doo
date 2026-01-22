@@ -48,18 +48,18 @@ function Take_notes() {
       setexpand(false);
       return;
     }
-    const payload={
+    const detail={
       title:note.title,
       description:note.description,
       bgcolor:note.bgcolor,
-      archive:false,
-      Trash:true,
+      Archive:false,
+      Trash:false,
     }
     try{
       const res=await fetch('http://localhost:5000/notes',{
         method:"POST",
         headers: {"Content-type":"application/json"},
-        body: JSON.stringify(payload)
+        body: JSON.stringify(detail)
       })
       const data=await res.json();
       setSaved(prev => {
@@ -97,7 +97,7 @@ function Take_notes() {
     let valid=true;
     const fetchNotes = async () => {
       try{
-        const res = await fetch(`http://localhost:5000/notes?userId=$(currentid.id)&Archive=false&Trash=false`);
+        const res = await fetch(`http://localhost:5000/notes?userId=$(currentid.id)&Archive=frue&Trash=frue`);
         const data = await res.json();
 
         if(valid){

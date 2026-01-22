@@ -95,9 +95,7 @@ function Trash() {
                   backgroundColor: "transparent"
                 }}
                 value={note.title}
-                onChange={(e) =>
-                  updateNote(index, 'title', e.target.value)
-                }
+                
               />
 
         
@@ -115,9 +113,6 @@ function Trash() {
                 backgroundColor: "transparent"
               }}
               value={note.description}
-              onChange={(e) =>
-                updateNote(index, 'description', e.target.value)
-              }
             />
 
             <div
