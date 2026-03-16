@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useContext } from 'react'
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { TextareaAutosize, Tooltip } from '@mui/material';
@@ -16,10 +16,13 @@ import Popover from "@mui/material/Popover";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import Api from '../services/Api';
+import { SearchContext } from '../Dashboard/FunDoo';
 
 export default function Grid_view({ saved, setSaved }) {
 
   const { open } = useDrawer();
+  const searchText = useContext(SearchContext);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [activeIndex, setActiveIndex] = useState(null);
 
@@ -121,9 +124,20 @@ export default function Grid_view({ saved, setSaved }) {
   };
 
 
+  // const notes = Array.isArray(saved)
+  // ? saved.filter(n => !n.archived && !n.trashed)
+  // : [];
+
   const notes = Array.isArray(saved)
-  ? saved.filter(n => !n.archived && !n.trashed)
-  : [];
+        ? saved.filter(n =>
+            !n.archived &&
+            !n.trashed &&
+            (
+                n.title?.toLowerCase().includes(searchText.toLowerCase()) ||
+                n.description?.toLowerCase().includes(searchText.toLowerCase())
+            )
+        )
+        : [];
 
 
   return (

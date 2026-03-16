@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { TextareaAutosize, Tooltip, IconButton, Popover, ClickAwayListener } from '@mui/material';
@@ -12,11 +12,14 @@ import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { useDrawer } from './Side-Bar-Context';
+import { SearchContext } from '../Dashboard/FunDoo';
 import Api from '../services/Api';
 
 export default function List_view({ saved, setSaved }) {
 
     const { open } = useDrawer();
+    const searchText = useContext(SearchContext);
+
     const [anchorEl, setAnchorEl] = useState(null);
     const [activeIndex, setActiveIndex] = useState(null);
 
@@ -112,7 +115,14 @@ export default function List_view({ saved, setSaved }) {
 
 
     const notes = Array.isArray(saved)
-        ? saved.filter(n => !n.archived && !n.trashed)
+        ? saved.filter(n =>
+            !n.archived &&
+            !n.trashed &&
+            (
+                n.title?.toLowerCase().includes(searchText.toLowerCase()) ||
+                n.description?.toLowerCase().includes(searchText.toLowerCase())
+            )
+        )
         : [];
 
 
