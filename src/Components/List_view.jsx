@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import { TextareaAutosize, Tooltip } from '@mui/material';
+import { TextareaAutosize, Tooltip, IconButton, Popover, ClickAwayListener } from '@mui/material';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import FormatColorTextOutlinedIcon from '@mui/icons-material/FormatColorTextOutlined';
@@ -10,138 +10,134 @@ import AddAlertOutlinedIcon from '@mui/icons-material/AddAlertOutlined';
 import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
 import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
-import IconButton from '@mui/material/IconButton';
-import { useDrawer } from './Side-Bar-Context';
-import Popover from "@mui/material/Popover";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { useDrawer } from './Side-Bar-Context';
+import Api from '../services/Api';
 
 export default function List_view({ saved, setSaved }) {
 
-    const colors = [
-        "#ffffff",
-        "#f28b82",
-        "#fbbc04",
-        "#fff475",
-        "#ccff90",
-        "#a7ffeb",
-        "#cbf0f8",
-        "#aecbfa",
-        "#d7aefb"
-    ];
-
     const { open } = useDrawer();
-
-
     const [anchorEl, setAnchorEl] = useState(null);
     const [activeIndex, setActiveIndex] = useState(null);
 
-    const updateNote = async (index, field, value) => {
-        setSaved(prev =>
-            prev.map((note, i) =>
-                i === index ? { ...note, [field]: value } : note
-            )
-        )
-        const n = saved[index];
-        if (!n) return;
+    const colors = ["#ffffff", "#f28b82", "#fbbc04", "#fff475", "#ccff90", "#a7ffeb", "#cbf0f8", "#aecbfa", "#d7aefb"];
+
+
+    const updateNote = async (note, index, field, value) => {
+
+        const updated = { ...note, [field]: value };
+
+        setSaved(prev => prev.map((n, i) => i === index ? updated : n));
+
         try {
-            await fetch(`http://localhost:5000/notes/${n.id}`, {
-                "method": "PATCH",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ [field]: value }),
-            })
-            console.log(saved)
+            await Api.patch(`/note/update/${note.noteId}`, updated);
         }
-        catch (error) {
-            console.log(error);
+        catch (err) {
+            console.log(err);
         }
     };
 
-    const updateColor = async (index, color) => {
-        setSaved(prev =>
-            prev.map((note, i) =>
-                i === index ? { ...note, bgcolor: color } : note
-            )
-        )
-        const n = saved[index];
-        if (!n) return;
-        try {
-            await fetch(`http://localhost:5000/notes/${n.id}`, {
-                "method": "PATCH",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ bgcolor: color }),
-            })
-            console.log(saved)
-        }
-        catch (error) {
-            console.log(error);
-        }
-    };
-    const handleA = async (index) => {
-        const note = saved[index];
-        if (!note) return;
 
-        setSaved(prev => prev.filter((_, i) => i !== index));
+    const updateColor = async (note, index, color) => {
+
+        const updated = { ...note, color: color };
+
+        setSaved(prev => prev.map((n, i) => i === index ? updated : n));
 
         try {
-            await fetch(`http://localhost:5000/notes/${note.id}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ Archive: true }),
-            });
-        } catch (error) {
-            console.log(error);
+            await Api.patch(`/note/update/${note.noteId}`, updated);
+        }
+        catch (err) {
+            console.log(err);
         }
     };
 
-    const handleDelete = async (index) => {
-        const note = saved[index];
-        if (!note) return;
 
+    const handleArchive = async (note, index) => {
 
-        setSaved(prev => prev.filter((_, i) => i !== index));
+        const updated = { ...note, archived: true };
 
         try {
-            await fetch(`http://localhost:5000/notes/${note.id}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ Trash: true }),
-            });
-        } catch (error) {
-            console.log(error);
+
+            await Api.put(`/note/archive/${note.noteId}`, updated);
+
+            setSaved(prev =>
+                prev.map(n =>
+                    n.noteId === note.noteId ? updated : n
+                )
+            );
+
+        }
+        catch (err) {
+            console.log(err);
+        }
+    };
+
+
+    const handleDelete = async (note, index) => {
+
+        const updated = { ...note, trashed: true };
+
+        try {
+
+            await Api.put(`/note/trash/${note.noteId}`, updated);
+
+            setSaved(prev =>
+                prev.map(n =>
+                    n.noteId === note.noteId ? updated : n
+                )
+            );
+
+        }
+        catch (err) {
+            console.log(err);
         }
     };
 
 
     const handleColorOpen = (event, index) => {
+
         setAnchorEl(event.currentTarget);
         setActiveIndex(index);
-    }
+
+    };
+
 
     const handleColorClose = () => {
+
         setAnchorEl(null);
         setActiveIndex(null);
-    }
+
+    };
+
+
+    const notes = Array.isArray(saved)
+        ? saved.filter(n => !n.archived && !n.trashed)
+        : [];
+
 
     return (
         <>
-            {saved.map((note, index) => (
+            {notes.map((note, index) => (
+
                 <Paper
-                    key={note.id}
+                    key={note.noteId || index}
                     elevation={2}
                     sx={{
                         p: 1,
                         boxSizing: "border-box",
-                        backgroundColor: note.bgcolor,
+                        backgroundColor: note.color || "#fff",
                         position: 'relative',
                         mt: 5,
                         ml: open ? 60 : 38,
                         width: '48%'
-
                     }}
                 >
+
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+
                         <div style={{ display: 'flex', flexDirection: 'row' }}>
+
                             <TextareaAutosize
                                 aria-label="note title"
                                 placeholder="Title"
@@ -153,16 +149,18 @@ export default function List_view({ saved, setSaved }) {
                                     marginBottom: '10px',
                                     backgroundColor: "transparent"
                                 }}
-                                value={note.title}
+                                value={note.title || ""}
                                 onChange={(e) =>
-                                    updateNote(index, 'title', e.target.value)
+                                    updateNote(note, index, 'title', e.target.value)
                                 }
                             />
 
                             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
                                 <PushPinOutlinedIcon />
                             </div>
+
                         </div>
+
 
                         <TextareaAutosize
                             aria-label="note content"
@@ -175,87 +173,72 @@ export default function List_view({ saved, setSaved }) {
                                 resize: 'none',
                                 backgroundColor: "transparent"
                             }}
-                            value={note.description}
+                            value={note.description || ""}
                             onChange={(e) =>
-                                updateNote(index, 'description', e.target.value)
+                                updateNote(note, index, 'description', e.target.value)
                             }
                         />
 
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                flexWrap: "nowrap",
-                                marginTop: "10px",
-                            }}
-                        >
 
-                            <Tooltip title="formatting options" sx={{ opacity: '1', cursor: 'pointer', pl: 0 }}>
-                                <IconButton>
-                                    <FormatColorTextOutlinedIcon />
-                                </IconButton>
+                        <div style={{ display: "flex", alignItems: "center", flexWrap: "nowrap", marginTop: "10px" }}>
+
+                            <Tooltip title="formatting options">
+                                <IconButton><FormatColorTextOutlinedIcon /></IconButton>
                             </Tooltip>
 
                             <Tooltip title="change color">
-                                <IconButton >
-                                    <ColorLensOutlinedIcon sx={{ cursor: 'pointer', pl: 1, pr: 1 }} onClick={(e) => handleColorOpen(e, index)} />
+                                <IconButton onClick={(e) => handleColorOpen(e, index)}>
+                                    <ColorLensOutlinedIcon />
                                 </IconButton>
                             </Tooltip>
 
                             <Tooltip title="remind me">
-                                <IconButton>
-                                    <AddAlertOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
-                                </IconButton>
+                                <IconButton><AddAlertOutlinedIcon /></IconButton>
                             </Tooltip>
+
                             <Tooltip title="collaborator">
-                                <IconButton>
-                                    <PersonAddAlt1OutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
-                                </IconButton>
+                                <IconButton><PersonAddAlt1OutlinedIcon /></IconButton>
                             </Tooltip>
+
                             <Tooltip title="add img">
-                                <IconButton>
-                                    <ImageOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
-                                </IconButton>
+                                <IconButton><ImageOutlinedIcon /></IconButton>
                             </Tooltip>
+
                             <Tooltip title="archive">
-                                <IconButton >
-                                    <ArchiveOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} onClick={() => handleA(index)} />
+                                <IconButton onClick={() => handleArchive(note, index)}>
+                                    <ArchiveOutlinedIcon />
                                 </IconButton>
                             </Tooltip>
+
                             <Tooltip title="Delete">
-                                <IconButton>
-                                    <DeleteOutlineOutlinedIcon onClick={() => handleDelete(index)} />
+                                <IconButton onClick={() => handleDelete(note, index)}>
+                                    <DeleteOutlineOutlinedIcon />
                                 </IconButton>
                             </Tooltip>
+
                             <Tooltip title="more options">
-                                <IconButton>
-                                    <MoreVertOutlinedIcon sx={{ textAlign: 'center', pl: 1, pr: 1, cursor: 'pointer' }} />
-                                </IconButton>
+                                <IconButton><MoreVertOutlinedIcon /></IconButton>
                             </Tooltip>
+
                         </div>
 
+
                         <Popover
-                            open={Boolean(anchorEl)}
+                            open={Boolean(anchorEl) && activeIndex === index}
                             anchorEl={anchorEl}
-                            anchorOrigin={{
-                                vertical: "bottom",
-                                horizontal: "center",
-                            }}
-                            transformOrigin={{
-                                vertical: "top",
-                                horizontal: "center",
-                            }}
-                            sx={{
-                                mt: 1,
-                                ml: 20,
-                            }}
+                            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                            transformOrigin={{ vertical: "top", horizontal: "center" }}
+                            sx={{ mt: 1, ml: 20 }}
                         >
+
                             <ClickAwayListener onClickAway={handleColorClose}>
+
                                 <Box sx={{ display: "flex", p: 1 }}>
-                                    {colors.map((color) => (
+
+                                    {colors.map(color => (
+
                                         <Box
                                             key={color}
-
                                             sx={{
                                                 width: 24,
                                                 height: 24,
@@ -263,28 +246,27 @@ export default function List_view({ saved, setSaved }) {
                                                 backgroundColor: color,
                                                 cursor: "pointer",
                                                 m: 0.5,
-                                                // mr:10,
-                                                border: "1px solid #ccc",
+                                                border: "1px solid #ccc"
                                             }}
                                             onClick={() => {
-                                                updateColor(activeIndex, color);
+                                                updateColor(note, index, color);
                                                 handleColorClose();
                                             }}
                                         />
+
                                     ))}
+
                                 </Box>
+
                             </ClickAwayListener>
+
                         </Popover>
 
                     </Box>
 
-
-
                 </Paper>
 
             ))}
-
-
         </>
-    )
+    );
 }

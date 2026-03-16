@@ -63,16 +63,8 @@ function SignUp() {
     }
 
     try {
-      // 🔍 Check if email already exists
-      const res = await api.get(`/users?email=${formData.email}`);
 
-      if (res.data.length > 0) {
-        setErrors({ email: "Email already registered*" });
-        return;
-      }
-
-      // 📤 Save user to JSON Server
-      await api.post("/users", {
+      await api.post("/user/register", {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,

@@ -1,73 +1,38 @@
 {
   "users": [
     {
-      "id": "b279",
-      "firstName": "Dharam",
-      "lastName": "Singh",
-      "email": "dhr@gmail.com",
+      "id": "8572",
+      "firstName": "Ayushman",
+      "lastName": "Verma",
+      "email": "ayushman.verma_cs.aiml22@gmail.com",
       "password": "12345678"
     },
     {
-      "id": "a26b",
+      "id": "072f",
       "firstName": "Ayushman",
       "lastName": "Verma",
-      "email": "vermamaaaan55@gmail.com",
+      "email": "vermamaan55@gmail.com",
       "password": "87654321"
     }
   ],
   "notes": [
     {
-      "id": "09a1",
+      "id": "1",
+      "userId": "1",
+      "title": "Sample Note",
+      "description": "Fundoo Notes",
+      "bgcolor": "#ffffff",
+      "isArchive": false,
+      "isTrash": false
+    },
+    {
+      "id": "efce",
       "title": "Ayushman Verma",
-      "description": "AIML ",
-      "bgcolor": "#f28b82",
-      "archive": false,
-      "Trash": false,
-      "Archive": false
-    },
-    {
-      "id": "a269",
-      "title": "Shreyash Singh",
-      "description": "CS",
-      "bgcolor": "#a7ffeb",
-      "archive": false,
-      "Trash": false,
-      "Archive": false
-    },
-    {
-      "id": "ce99",
-      "title": "Ayush Agarwal",
-      "description": "AIML",
-      "bgcolor": "#ccff90",
-      "archive": false,
-      "Trash": false,
-      "Archive": false
-    },
-    {
-      "id": "6122",
-      "title": "Divyansh Singh",
-      "description": "AIML",
-      "bgcolor": "#d7aefb",
-      "archive": false,
-      "Trash": false,
-      "Archive": false
-    },
-    {
-      "id": "b80a",
-      "title": "Ankur Sinsinwar",
-      "description": "IIOT CS",
-      "bgcolor": "#fff475",
-      "archive": false,
-      "Trash": false,
-      "Archive": false
-    },
-    {
-      "id": "9ea8",
-      "title": "Amitabh Singh ",
-      "description": "AIML",
-      "bgcolor": "#cbf0f8",
-      "Archive": false,
-      "Trash": false
+      "description": "Hello",
+      "bgcolor": "#fbbc04",
+      "isArchive": false,
+      "isTrash": false,
+      "userId": "8572"
     }
   ]
 }

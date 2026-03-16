@@ -8,13 +8,15 @@ import {
 } from "@mui/material";
 
 import React, { useState } from "react";
-
 import api from "../../services/Api";
-
 import { useNavigate, Link } from "react-router-dom";
+
 function SignIn() {
+
   const navigate = useNavigate();
+
   const [errors, setErrors] = useState({});
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,8 +29,8 @@ function SignIn() {
     });
   };
 
-
   const handleSubmit = async () => {
+
     let newErrors = {};
 
     if (!formData.email.endsWith("@gmail.com")) {
@@ -45,23 +47,37 @@ function SignIn() {
     }
 
     try {
-      const res = await api.get(
-        `/users?email=${formData.email}&password=${formData.password}`
-      );
 
-      if (res.data.length === 1) {
-        localStorage.setItem("loggedInUser", JSON.stringify(res.data[0]));
+      const res = await api.post("/user/login", {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (res.data) {
+
+        localStorage.setItem("user", JSON.stringify(res.data));
+
+        alert("Login Successful");
+
         navigate("/");
+
       } else {
+
         setErrors({ password: "Invalid email or password*" });
+
       }
+
     } catch (err) {
+
       console.error(err);
+      alert("Login failed");
+
     }
+
   };
 
-
   return (
+
     <Box
       sx={{
         minHeight: "100vh",
@@ -71,16 +87,16 @@ function SignIn() {
         bgcolor: "#f5f5f5",
       }}
     >
+
       <Card sx={{ width: 420 }}>
         <CardContent sx={{ p: 4 }}>
 
-          {/* Header */}
           <Typography
             variant="h6"
             sx={{ color: "#1a73e8", fontWeight: 600 }}
             textAlign="center"
           >
-            Fundoo
+            Fundoo Notes
           </Typography>
 
           <Typography variant="h5" sx={{ mt: 1 }} textAlign="center">
@@ -96,27 +112,17 @@ function SignIn() {
             to continue to Fundoo
           </Typography>
 
-          {/* Email */}
           <TextField
             fullWidth
-            label="Your email address"
+            label="Email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             error={!!errors.email}
             helperText={errors.email}
-            sx={{ mb: 0.5 }}
+            sx={{ mb: 2 }}
           />
 
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ mb: 2, display: "block" }}
-          >
-            use only letters, numbers & periods
-          </Typography>
-
-          {/* Password */}
           <TextField
             fullWidth
             label="Password"
@@ -128,15 +134,22 @@ function SignIn() {
             helperText={errors.password}
           />
 
+
           <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ mb: 3, display: "block" }}
+            component={Link}
+            to="/forgot-password"
+            sx={{
+              color: "#1a73e8",
+              fontSize: 14,
+              mt: 1,
+              cursor: "pointer",
+              textDecoration: "none",
+              display: "inline-block"
+            }}
           >
-            use only letters, numbers & periods
+            Forgot password?
           </Typography>
 
-          {/* Actions */}
           <Box
             sx={{
               display: "flex",
@@ -145,17 +158,17 @@ function SignIn() {
               mt: 3,
             }}
           >
+
             <Button
-              underline="none"
               sx={{
                 fontSize: 13,
                 color: "#1a73e8",
                 fontWeight: 500,
-                cursor: "pointer",
               }}
-              component={Link} to="/signup"
+              component={Link}
+              to="/signup"
             >
-              Create Account
+              Create account
             </Button>
 
             <Button
@@ -165,18 +178,18 @@ function SignIn() {
                 bgcolor: "#1a73e8",
                 textTransform: "none",
                 px: 4,
-                "&:hover": {
-                  bgcolor: "#1558b0",
-                },
               }}
             >
-              Submit
+              Sign In
             </Button>
+
           </Box>
 
         </CardContent>
       </Card>
+
     </Box>
+
   );
 }
 

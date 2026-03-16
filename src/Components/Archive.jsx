@@ -1,4 +1,4 @@
-import React, { act, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { TextareaAutosize, Tooltip } from '@mui/material';
@@ -9,261 +9,298 @@ import ColorLensOutlinedIcon from '@mui/icons-material/ColorLensOutlined';
 import Popover from "@mui/material/Popover";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
-
 import AddAlertOutlinedIcon from '@mui/icons-material/AddAlertOutlined';
 import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
 import { useDrawer } from './Side-Bar-Context';
-import List_view from './List_view';
-import Grid_view from './Grid_view';
+import Api from '../services/Api';
 
 function Archive() {
-  const [activeIndex, setActiveIndex] = useState([]);
-  const { toggleDrawer,handlePattern,click } = useDrawer();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [active, setActive] = useState(null);
-  const user = JSON.parse(localStorage.getItem('loggedInUser'));
-  const userId = user?.id;
+
+  const { open } = useDrawer();
+
+  const [notes,setNotes] = useState([]);
+  const [anchorEl,setAnchorEl] = useState(null);
+  const [activeIndex,setActiveIndex] = useState(null);
+
   const colors = [
-    "#ffffff",
-    "#f28b82",
-    "#fbbc04",
-    "#fff475",
-    "#ccff90",
-    "#a7ffeb",
-    "#cbf0f8",
-    "#aecbfa",
-    "#d7aefb"
+    "#ffffff","#f28b82","#fbbc04","#fff475",
+    "#ccff90","#a7ffeb","#cbf0f8","#aecbfa","#d7aefb"
   ];
-  useEffect(() => {
-    if (!user) return;
-    const fetchnotes = async () => {
-      try {
-        const res = await fetch(`http://localhost:5000/notes?userId=${user.id}&Archive=true&Trash=false`);
-        const data = await res.json();
-        console.log(data)
-        setActiveIndex(data);
+
+  const user = localStorage.getItem('user');
+  const userId = user ? JSON.parse(user).userId : null;
+
+  useEffect(()=>{
+
+    const fetchArchiveNotes = async () => {
+
+      try{
+
+        const res = await Api.get(`/note/archive/${userId}`);
+
+        const data = Array.isArray(res.data)
+        ? res.data.filter(n => n.archived && !n.trashed)
+        : [];
+
+        setNotes(data);
+
       }
-      catch (error) {
-        console.log(error);
+      catch(err){
+        console.log(err);
       }
-    }
-    fetchnotes();
-  }, [userId]);
 
-  const handleClick = async (id) => {
-    try {
-      await fetch(`http://localhost:5000/notes/${id}`, {
-        "method": "PATCH",
-        header: { "Content-type": "application/json" },
-        body: JSON.stringify({ Archive: false })
-      })
-      setActiveIndex(prev => prev.filter(note => note.id !== id));
+    };
 
-      console.log('Archive note ID:', id);
-    }
-    catch (error) {
-      console.log(error);
-    }
-  }
+    fetchArchiveNotes();
 
-  const updateNote = async (index, field, value) => {
-    setActiveIndex(prev =>
-      prev.map((note, i) =>
-        i === index ? { ...note, [field]: value } : note
-      )
-    )
-    const n = activeIndex[index];
-    if (!n) return;
-    try {
-      await fetch(`http://localhost:5000/notes/${n.id}`, {
-        "method": "PATCH",
-        header: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ [field]: value }),
-      })
-      console.log(saved)
+  },[userId]);
+
+
+
+  const handleUnarchive = async (note,index) => {
+
+    try{
+
+      await Api.put(`/note/archive/${note.noteId}`);
+
+      setNotes(prev =>
+        prev.filter(n => n.noteId !== note.noteId)
+      );
+
     }
-    catch (error) {
-      console.log(error);
+    catch(err){
+      console.log(err);
     }
+
   };
 
-  const updateColor = async (index, color) => {
-    setActiveIndex(prev =>
-      prev.map((note, i) =>
-        i === index ? { ...note, bgcolor: color } : note
-      )
-    )
-    const n = activeIndex[index];
-    if (!n) return;
-    try {
-      await fetch(`http://localhost:5000/notes/${n.id}`, {
-        "method": "PATCH",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bgcolor: color }),
-      })
-      console.log(saved)
+
+  const handleDelete = async (note,index) => {
+
+    try{
+
+      await Api.put(`/note/trash/${note.noteId}`);
+
+      setNotes(prev =>
+        prev.filter(n => n.noteId !== note.noteId)
+      );
+
     }
-    catch (error) {
-      console.log(error);
+    catch(err){
+      console.log(err);
     }
+
   };
 
-  const handleColorOpen = (event, index) => {
+
+  const updateNote = async (note,index,field,value) => {
+
+    const updated = { ...note , [field]:value };
+
+    setNotes(prev =>
+      prev.map((n,i)=> i===index ? updated : n)
+    );
+
+    try{
+
+      await Api.put(`/note/update/${note.noteId}`,updated);
+
+    }
+    catch(err){
+      console.log(err);
+    }
+
+  };
+
+
+  const updateColor = async (note,index,color) => {
+
+    const updated = { ...note , color:color };
+
+    setNotes(prev =>
+      prev.map((n,i)=> i===index ? updated : n)
+    );
+
+    try{
+
+      await Api.put(`/note/update/${note.noteId}`,updated);
+
+    }
+    catch(err){
+      console.log(err);
+    }
+
+  };
+
+
+  const handleColorOpen = (event,index) => {
+
     setAnchorEl(event.currentTarget);
-    setActive(index);
-  }
+    setActiveIndex(index);
+
+  };
+
 
   const handleColorClose = () => {
+
     setAnchorEl(null);
-    setActive(null);
-  }
+    setActiveIndex(null);
+
+  };
 
 
   return (
     <>
-      {activeIndex.map((note, index) => (
+
+      {notes.map((note,index)=>(
+
         <Paper
-          key={note.id}
+          key={note.noteId || index}
           elevation={2}
           sx={{
-            p: 1,
-            boxSizing: "border-box",
-            backgroundColor: note.bgcolor,
-            position: 'relative',
-            mt: 5,
+            p:1,
+            boxSizing:"border-box",
+            backgroundColor: note.color || "#fff",
+            position:'relative',
+            mt:5,
             ml: open ? 60 : 38,
-            width: '48%'
-
+            width:'48%'
           }}
         >
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <TextareaAutosize
-                aria-label="note title"
-                placeholder="Title"
-                style={{
-                  width: '100%',
-                  border: 'none',
-                  outline: 'none',
-                  fontSize: '1.5rem',
-                  marginBottom: '10px',
-                  backgroundColor: "transparent"
-                }}
-                value={note.title}
-                onChange={(e) =>
-                  updateNote(index, 'title', e.target.value)
-                }
-              />
 
+          <Box sx={{display:'flex',flexDirection:'column'}}>
+
+            <div style={{display:'flex',flexDirection:'row'}}>
+
+              <TextareaAutosize
+                placeholder="Title"
+                value={note.title || ""}
+                style={{
+                  width:'100%',
+                  border:'none',
+                  outline:'none',
+                  fontSize:'1.5rem',
+                  marginBottom:'10px',
+                  backgroundColor:"transparent"
+                }}
+                onChange={(e)=>updateNote(note,index,'title',e.target.value)}
+              />
 
             </div>
 
+
             <TextareaAutosize
-              aria-label="note content"
               placeholder="Take a note..."
+              value={note.description || ""}
               style={{
-                width: '100%',
-                border: 'none',
-                outline: 'none',
-                fontSize: '1rem',
-                resize: 'none',
-                backgroundColor: "transparent"
+                width:'100%',
+                border:'none',
+                outline:'none',
+                fontSize:'1rem',
+                resize:'none',
+                backgroundColor:"transparent"
               }}
-              value={note.description}
-              onChange={(e) =>
-                updateNote(index, 'description', e.target.value)
-              }
+              onChange={(e)=>updateNote(note,index,'description',e.target.value)}
             />
+
 
             <div
               style={{
-                display: "flex",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                marginTop: "10px",
+                display:"flex",
+                alignItems:"center",
+                flexWrap:"nowrap",
+                marginTop:"10px"
               }}
             >
+
               <Tooltip title="change color">
-                <IconButton >
-                  <ColorLensOutlinedIcon sx={{ cursor: 'pointer', pl: 1, pr: 1 }} onClick={(e) => handleColorOpen(e, index)} />
+                <IconButton onClick={(e)=>handleColorOpen(e,index)}>
+                  <ColorLensOutlinedIcon/>
                 </IconButton>
               </Tooltip>
+
               <Tooltip title="remind me">
                 <IconButton>
-                  <AddAlertOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
+                  <AddAlertOutlinedIcon/>
                 </IconButton>
               </Tooltip>
+
               <Tooltip title="collaborator">
                 <IconButton>
-                  <PersonAddAlt1OutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
+                  <PersonAddAlt1OutlinedIcon/>
                 </IconButton>
               </Tooltip>
+
               <Tooltip title="add img">
                 <IconButton>
-                  <ImageOutlinedIcon sx={{ pl: 1, pr: 1, cursor: 'pointer' }} />
+                  <ImageOutlinedIcon/>
                 </IconButton>
               </Tooltip>
+
               <Tooltip title="Unarchive">
-                <IconButton>
-                  <Unarchive sx={{ pl: 1, pr: 1, cursor: 'pointer' }} onClick={() => handleClick(note.id)} />
+                <IconButton onClick={()=>handleUnarchive(note,index)}>
+                  <Unarchive/>
                 </IconButton>
               </Tooltip>
+
               <Tooltip title="Delete">
-                <IconButton>
-                  <Delete sx={{ pl: 1, pr: 1, cursor: 'pointer' }}/>
+                <IconButton onClick={()=>handleDelete(note,index)}>
+                  <Delete/>
                 </IconButton>
               </Tooltip>
+
             </div>
+
 
             <Popover
               open={Boolean(anchorEl)}
               anchorEl={anchorEl}
+              onClose={handleColorClose}
               anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "center",
+                vertical:"bottom",
+                horizontal:"center"
               }}
               transformOrigin={{
-                vertical: "top",
-                horizontal: "center",
+                vertical:"top",
+                horizontal:"center"
               }}
-              sx={{
-                mt: 1,
-                ml: 20,
-              }}
+              sx={{mt:1,ml:20}}
             >
+
               <ClickAwayListener onClickAway={handleColorClose}>
-                <Box sx={{ display: "flex", p: 1 }}>
-                  {colors.map((color) => (
+
+                <Box sx={{display:"flex",p:1}}>
+
+                  {colors.map(color=>(
                     <Box
                       key={color}
-
                       sx={{
-                        width: 24,
-                        height: 24,
-                        borderRadius: "50%",
-                        backgroundColor: color,
-                        cursor: "pointer",
-                        m: 0.5,
-                        // mr:10,
-                        border: "1px solid #ccc",
+                        width:24,
+                        height:24,
+                        borderRadius:"50%",
+                        backgroundColor:color,
+                        cursor:"pointer",
+                        m:0.5,
+                        border:"1px solid #ccc"
                       }}
-                      onClick={() => {
-                        updateColor(active, color);
+                      onClick={()=>{
+                        updateColor(notes[activeIndex],activeIndex,color);
                         handleColorClose();
                       }}
                     />
                   ))}
+
                 </Box>
+
               </ClickAwayListener>
+
             </Popover>
+
           </Box>
+
         </Paper>
 
       ))}
-      {/* {
-          click?<List_view active={saved} setactive={setSaved}/>:
-          <Grid_view active={saved} setActive={setSaved}/>
-          } */}
 
     </>
   )

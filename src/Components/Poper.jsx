@@ -48,7 +48,7 @@ function Poper({anchorEl, onclose}) {
                     <AddIcon/>
                     Add Account
                 </Button>
-                <Button fullWidth variant="outlined" sx={{borderBottomRightRadius:25,borderTopRightRadius:25,color:'black',backgroundColor:'white',fontSize:'12px'}}>
+                <Button fullWidth variant="outlined" component={Link} to="/SignIn" sx={{borderBottomRightRadius:25,borderTopRightRadius:25,color:'black',backgroundColor:'white',fontSize:'12px'}}>
                     <LogoutOutlinedIcon/>
                     Sign Out
                 </Button>

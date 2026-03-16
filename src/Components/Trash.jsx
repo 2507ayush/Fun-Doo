@@ -1,146 +1,134 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import { TextareaAutosize, Tooltip } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import Restore from '@mui/icons-material/RestoreFromTrashOutlined';
-import DltFrv from '@mui/icons-material/DeleteForeverOutlined';
+import { IconButton, Tooltip } from '@mui/material';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import RestoreFromTrashOutlinedIcon from '@mui/icons-material/RestoreFromTrashOutlined';
+import { useDrawer } from './Side-Bar-Context';
+import Api from '../services/Api';
 
+export default function Trash() {
 
-function Trash() {
-  const [activeIndex, setActiveIndex] = useState([]);
-  const user = JSON.parse(localStorage.getItem('loggedInUser'));
-  const userId = user?.id;
+  const { open } = useDrawer();
 
+  const [notes, setNotes] = useState([]);
 
-  useEffect(()=>{
-    if(!user) return;
-    const fetchnotes=async ()=>{
-      try{
-        const res = await fetch(`http://localhost:5000/notes?userId=${user.id}&archive=false&Trash=true`);
-        const data = await res.json();
-        console.log(data)
-        setActiveIndex(data);
+  const user = localStorage.getItem('user');
+  const userId = user ? JSON.parse(user).userId : null;
+
+  useEffect(() => {
+
+    const fetchTrashNotes = async () => {
+
+      if (!userId) return;
+
+      try {
+
+        const res = await Api.get(`/note/trash/${userId}`);
+
+        const data = Array.isArray(res.data)
+          ? res.data.filter(n => n.trashed)
+          : [];
+
+        setNotes(data);
+
       }
-      catch(error){
-        console.log(error);
+      catch (err) {
+        console.log(err);
       }
-    }
-    fetchnotes();
-  },[userId]);
 
-  const handleClick = async(id) =>{
-    try{
-      await fetch(`http://localhost:5000/notes/${id}`,{
-        "method":"PATCH",
-        header:{"Content-type":"application/json"},
-        body : JSON.stringify({Trash : false})
-      })
-      setActiveIndex(prev => prev.filter(note => note.id !== id));
+    };
 
-      console.log('Archive note ID:',id);
-    }
-    catch(error){
-      console.log(error);
-    }
-  }
+    fetchTrashNotes();
 
-  const permanentDelete = async(id) => {
-    try{
-      const response = await fetch(`http://localhost:5000/notes/${id}`,
-        {method : "DELETE"}
+  }, [userId]);
+
+
+  const handleRestore = async (note) => {
+
+
+    try {
+
+      await Api.put(`/note/trash/${note.noteId}`);
+
+      setNotes(prev =>
+        prev.filter(n => n.noteId !== note.noteId)
       );
 
-      if(!response.ok){
-        throw new Error("Failed to delete note");
-      }
+    }
+    catch (err) {
+      console.log('Error restoring note:', err);
+    }
 
-      setActiveIndex(prev => prev.filter(note => note.id !==id));
-      console.log("Deleted note ID:",id);
+  };
+
+
+  const handlePermanentDelete = async (note) => {
+
+    try {
+
+      await Api.delete(`/note/delete/${note.noteId}`);
+
+      setNotes(prev =>
+        prev.filter(n => n.noteId !== note.noteId)
+      );
+
     }
-    catch(error){
-      console.error(error);
+    catch (err) {
+      console.log('Error deleting note permanently:', err);
     }
+
   };
 
 
   return (
     <>
-      {activeIndex.map((note, index) => (
+      {notes.map((note, index) => (
+
         <Paper
-          key={note.id}
+          key={note.noteId || index}
           elevation={2}
           sx={{
             p: 1,
             boxSizing: "border-box",
-            backgroundColor: note.bgcolor,
-            position: 'relative',
+            backgroundColor: note.color || "#fff",
             mt: 5,
             ml: open ? 60 : 38,
-            width: '48%'
-
+            width: '48%',
           }}
         >
+
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <TextareaAutosize
-                aria-label="note title"
-                placeholder="Title"
-                style={{
-                  width: '100%',
-                  border: 'none',
-                  outline: 'none',
-                  fontSize: '1.5rem',
-                  marginBottom: '10px',
-                  backgroundColor: "transparent"
-                }}
-                value={note.title}
-                
-              />
 
-        
+            <div style={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: 5 }}>
+              {note.title || 'No Title'}
             </div>
 
-            <TextareaAutosize
-              aria-label="note content"
-              placeholder="Take a note..."
-              style={{
-                width: '100%',
-                border: 'none',
-                outline: 'none',
-                fontSize: '1rem',
-                resize: 'none',
-                backgroundColor: "transparent"
-              }}
-              value={note.description}
-            />
+            <div style={{ marginBottom: 10 }}>
+              {note.description || 'No Description'}
+            </div>
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                marginTop: "10px",
-              }}
-            >
+            <div style={{ display: 'flex', gap: 10 }}>
+
               <Tooltip title="Restore">
-                <IconButton>
-                  <Restore onClick={() => handleClick(note.id)} />
+                <IconButton onClick={() => handleRestore(note)}>
+                  <RestoreFromTrashOutlinedIcon />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Permanent Delete">
-                <IconButton onClick={() => permanentDelete(note.id)}>
-                  <DltFrv/>
+
+              <Tooltip title="Delete Permanently">
+                <IconButton onClick={() => handlePermanentDelete(note)}>
+                  <DeleteOutlineOutlinedIcon />
                 </IconButton>
               </Tooltip>
+
             </div>
+
           </Box>
+
         </Paper>
 
       ))}
-
     </>
-  )
+  );
 }
-
-export default Trash
